@@ -1,4 +1,4 @@
-name: kube-score
+name: Lint and run kube-score
 
 on: pull_request
 
