@@ -1,4 +1,4 @@
-name: kube-score
+name: Lint and run kube-score
 
 on: pull_request
 
@@ -16,7 +16,9 @@ jobs:
         run: |
           for chart in charts/*; do
             if [ -d "$chart" ]; then
-              echo "🔍 Running kube-score for $chart..."
+              echo "Running helm lint for $chart..."
+              helm lint "$chart" || exit 1
+              echo "Running kube-score for $chart..."
               helm template "$(basename "$chart")" "$chart" | \
               docker run --rm -i zegl/kube-score:latest score - || exit 1
             fi
