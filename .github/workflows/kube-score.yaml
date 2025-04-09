@@ -1,9 +1,6 @@
 name: kube-score
 
-on:
-  push:
-    branches:
-      - main
+on: pull_request
 
 jobs:
   kube-score:
@@ -15,6 +12,12 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4.3.0
 
-      - name: Run kube-score using official Docker image
+      - name: Run kube-score on all local charts
         run: |
-          helm template . | docker run --rm -i zegl/kube-score:latest score -
+          for chart in charts/*; do
+            if [ -d "$chart" ]; then
+              echo "🔍 Running kube-score for $chart..."
+              helm template "$(basename "$chart")" "$chart" | \
+              docker run --rm -i zegl/kube-score:latest score - || exit 1
+            fi
+          done
