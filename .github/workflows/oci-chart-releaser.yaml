@@ -3,9 +3,12 @@ name: Publish Helm Charts
 on: pull_request
 
 jobs:
-  kube-score:
+  publish-charts:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        
       - name: Push example-chart
         uses: appany/helm-oci-chart-releaser@v0.3.0
         with:
